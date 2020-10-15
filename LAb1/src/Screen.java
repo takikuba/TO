@@ -6,44 +6,6 @@ import java.net.URL;
 
 public class Screen  {
 
-    static double getCash(String val1, String val2, Double val3) throws Exception {
-        double[] info1 = getLine(val1);
-        double[] info2 = getLine(val2);
-
-        return (info1[0] / info1[1]) / (info2[0] / info2[1]) * val3;
-    }
-
-    static double getRate(String val1) throws Exception{
-        double[] info1 = getLine(val1);
-        return info1[0];
-    }
-
-    static double[] getLine(String var) throws Exception{
-        new URLReader();
-        BufferedReader data = URLReader.getData();
-        String line, line2 = "one", line3;
-        boolean is = false;
-        double przelicznik = 0, kurs = 0;
-        while ((line = data.readLine()) != null){
-            if(is){
-                line3 = line.replaceAll(",", ".");
-                kurs = Double.parseDouble(line3.replaceAll("[^0-9.]", ""));
-                is = false;
-            }
-            if( line.contains(var)){
-                przelicznik = Double.parseDouble(line2.replaceAll("[^\\d.]",""));
-                is = true;
-            }
-            line2 = line;
-
-        }
-        data.close();
-        double []retval = {0, 0};
-        retval[0] = kurs;
-        retval[1] = przelicznik;
-        return retval;
-    }
-
     public static void main(String []args) {
 
         JFrame jFrame = new JFrame("Wymiana walut");
@@ -59,12 +21,12 @@ public class Screen  {
 
         Button button1 = new Button("Set");
         button1.setBounds(120, 45, 50, 20);
-        final String[] val1 = new String[1];
+        final String[] currencyNameSell = new String[1];
         button1.addActionListener((e)->{
-            val1[0] = choice1.getItem(choice1.getSelectedIndex());
-            label1.setText("Waluta do wymiany: " + val1[0]);
+            currencyNameSell[0] = choice1.getItem(choice1.getSelectedIndex());
+            label1.setText("Waluta do wymiany: " + currencyNameSell[0]);
             try {
-                label12.setText("Aktualny kurs: " + getRate(val1[0]));
+                label12.setText("Aktualny kurs: " + Cantor.getRate(currencyNameSell[0]));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -85,12 +47,12 @@ public class Screen  {
 
         Button button2 = new Button("Set");
         button2.setBounds(120, 100, 50, 20);
-        final String[] val2 = new String[1];
+        final String[] currencyNameBuy = new String[1];
         button2.addActionListener((e)->{
-            val2[0] = choice2.getItem(choice2.getSelectedIndex());
-            label2.setText("Wymieniam na: " + val2[0]);
+            currencyNameBuy[0] = choice2.getItem(choice2.getSelectedIndex());
+            label2.setText("Wymieniam na: " + currencyNameBuy[0]);
             try {
-                label22.setText("Aktualny kurs: " + getRate(val2[0]));
+                label22.setText("Aktualny kurs: " + Cantor.getRate(currencyNameBuy[0]));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -112,11 +74,11 @@ public class Screen  {
 
         Button button3 = new Button("Wymien!");
         button3.setBounds(150, 200, 70, 20);
-        final Double[] val3 = new Double[1];
+        final Double[] quantity = new Double[1];
         button3.addActionListener((e)->{
-            val3[0] = Double.valueOf(textField.getText());
+            quantity[0] = Double.valueOf(textField.getText());
             try {
-                label4.setText("Otrzymasz: " + String.format("%.2f", getCash(val1[0], val2[0], val3[0])) + " " + val2[0]);
+                label4.setText("Otrzymasz: " + String.format("%.2f", Cantor.getCash(currencyNameSell[0], currencyNameBuy[0], quantity[0])) + " " + currencyNameBuy[0]);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

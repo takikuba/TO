@@ -2,42 +2,42 @@ import java.io.BufferedReader;
 
 public class Cantor {
 
-    static double getCash(String val1, String val2, Double val3) throws Exception {
-        double[] info1 = getLine(val1);
-        double[] info2 = getLine(val2);
+    static double getCash(String currencySell, String currencyBuy, Double quantity) throws Exception {
+        double[] cash1 = getLine(currencySell);
+        double[] cash2 = getLine(currencyBuy);
 
-        return (info1[0] / info1[1]) / (info2[0] / info2[1]) * val3;
+        return (cash1[0] / cash1[1]) / (cash2[0] / cash2[1]) * quantity;
     }
 
-    static double getRate(String val1) throws Exception{
-        double[] info1 = getLine(val1);
-        return info1[0];
+    static double getRate(String currencyName) throws Exception{
+        double[] rate = getLine(currencyName);
+        return rate[0];
     }
 
-    static double[] getLine(String var) throws Exception{
+    static double[] getLine(String currencyName) throws Exception{
         new URLReader();
         BufferedReader data = URLReader.getData();
-        String line, line2 = "one", line3;
+        String line, strConverter = "one", strExchangeRate;
         boolean is = false;
-        double conventer = 0, exchengeRate = 0;
+        double conventer = 0, exchangeRate = 0;
         while ((line = data.readLine()) != null){
             if(is){
-                line3 = line.replaceAll(",", ".");
-                exchengeRate = Double.parseDouble(line3.replaceAll("[^0-9.]", ""));
+                strExchangeRate = line.replaceAll(",", ".");
+                exchangeRate = Double.parseDouble(strExchangeRate.replaceAll("[^0-9.]", ""));
                 is = false;
             }
-            if( line.contains(var)){
-                conventer = Double.parseDouble(line2.replaceAll("[^\\d.]",""));
+            if( line.contains(currencyName)){
+                conventer = Double.parseDouble(strConverter.replaceAll("[^0-9.]",""));
                 is = true;
             }
-            line2 = line;
+            strConverter = line;
 
         }
         data.close();
-        double []retval = {0, 0};
-        retval[0] = exchengeRate;
-        retval[1] = conventer;
-        return retval;
+        double []currency = {0, 0};
+        currency[0] = exchangeRate;
+        currency[1] = conventer;
+        return currency;
     }
 
 }
