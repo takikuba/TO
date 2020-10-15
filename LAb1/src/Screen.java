@@ -6,7 +6,11 @@ import java.net.URL;
 
 public class Screen  {
 
-    public static void main(String []args) {
+    static Currency currencySell;
+    static Currency currencyBuy;
+    static double quantity;
+
+    public static void main(String []args) throws Exception{
 
         JFrame jFrame = new JFrame("Wymiana walut");
 
@@ -18,18 +22,19 @@ public class Screen  {
         Choice choice1;
         choice1 = new CashList().getCashList();
         choice1.setBounds(40, 45, 75, 75);
+        System.out.println("Break1");
 
         Button button1 = new Button("Set");
         button1.setBounds(120, 45, 50, 20);
-        final String[] currencyNameSell = new String[1];
         button1.addActionListener((e)->{
-            currencyNameSell[0] = choice1.getItem(choice1.getSelectedIndex());
-            label1.setText("Waluta do wymiany: " + currencyNameSell[0]);
             try {
-                label12.setText("Aktualny kurs: " + Cantor.getRate(currencyNameSell[0]));
+                currencySell = new Currency(choice1.getItem(choice1.getSelectedIndex()));
+                label1.setText("Waluta do wymiany: " + currencySell.name);
+                label12.setText("Aktualny kurs: " + currencySell.getRate());
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+            System.out.println("B4");
         });
 
         jFrame.getContentPane().add(button1);
@@ -43,16 +48,16 @@ public class Screen  {
         label22.setBounds(250, 100, 150, 20);
 
         Choice choice2 = new CashList().getCashList();
+
         choice2.setBounds(40, 100, 75, 75);
 
         Button button2 = new Button("Set");
         button2.setBounds(120, 100, 50, 20);
-        final String[] currencyNameBuy = new String[1];
         button2.addActionListener((e)->{
-            currencyNameBuy[0] = choice2.getItem(choice2.getSelectedIndex());
-            label2.setText("Wymieniam na: " + currencyNameBuy[0]);
             try {
-                label22.setText("Aktualny kurs: " + Cantor.getRate(currencyNameBuy[0]));
+                currencyBuy = new Currency(choice2.getItem(choice2.getSelectedIndex()));
+                label2.setText("Wymieniam na: " + currencyBuy.name);
+                label22.setText("Aktualny kurs: " + currencyBuy.getRate());
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -74,11 +79,11 @@ public class Screen  {
 
         Button button3 = new Button("Wymien!");
         button3.setBounds(150, 200, 70, 20);
-        final Double[] quantity = new Double[1];
         button3.addActionListener((e)->{
-            quantity[0] = Double.valueOf(textField.getText());
+            quantity = Double.parseDouble(textField.getText());
             try {
-                label4.setText("Otrzymasz: " + String.format("%.2f", Cantor.getCash(currencyNameSell[0], currencyNameBuy[0], quantity[0])) + " " + currencyNameBuy[0]);
+                new Cantor(currencySell, currencyBuy, quantity);
+                label4.setText("Otrzymasz: " + String.format("%.2f", Cantor.giveTheChange) + " " + currencyBuy.name);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -98,6 +103,11 @@ public class Screen  {
 }
 
 class URLReader {
+    static BufferedReader data;
+    URLReader() throws Exception {
+        URLReader.data = URLReader.getData();
+    }
+
     public static BufferedReader getData() throws Exception{
         URL webPage = new URL("https://www.nbp.pl/kursy/xml/lasta.xml");
         return new BufferedReader( new InputStreamReader(webPage.openStream()));
@@ -105,14 +115,24 @@ class URLReader {
 }
 
 class CashList extends Choice {
-    Choice getCashList(){
-        Choice choice = new Choice();
+
+    static Choice choice;
+
+    CashList(){
+        choice = getCashList();
+    }
+
+    Choice getCashList() {
+        choice = new Choice();
         String[] cash = {"THB", "USD", "AUD", "HKD", "CAD", "NZD", "SGD", "EUR", "HUF", "CHF", "GBP", "UAH",
                          "JPY", "CZK", "DKK", "ISK", "NOK", "SEK", "HRK", "RON", "BGN", "TRY", "ILS", "CLP",
                          "PHP", "MXN", "ZAR", "BRL", "MYR", "RUB", "IDR", "INR", "KRW", "CNY", "XRD"};
+
         for(String s: cash){
             choice.add(s);
         }
+        System.out.println("BreakChoice");
         return choice;
     }
+
 }

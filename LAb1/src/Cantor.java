@@ -2,24 +2,37 @@ import java.io.BufferedReader;
 
 public class Cantor {
 
-    static double getCash(String currencySell, String currencyBuy, Double quantity) throws Exception {
-        double[] cash1 = getLine(currencySell);
-        double[] cash2 = getLine(currencyBuy);
+    static double giveTheChange;
 
-        return (cash1[0] / cash1[1]) / (cash2[0] / cash2[1]) * quantity;
+    public Cantor(Currency currencySell, Currency currencyBuy, double quantity){
+        giveTheChange = (currencySell.exchangeRate / currencySell.converter) / (currencyBuy.exchangeRate / currencyBuy.converter) * quantity;
     }
 
-    static double getRate(String currencyName) throws Exception{
-        double[] rate = getLine(currencyName);
-        return rate[0];
+}
+
+class Currency{
+    String name;
+    double exchangeRate;
+    double converter;
+
+    Currency(String name) throws Exception {
+        this.name = name;
+        this.setLine(this.name);
+    }
+    double getRate() {
+        return this.exchangeRate;
     }
 
-    static double[] getLine(String currencyName) throws Exception{
-        new URLReader();
-        BufferedReader data = URLReader.getData();
+    double getConverter() {
+        return this.converter;
+    }
+
+    void setLine(String currencyName) throws Exception{
+        URLReader urlReader = new URLReader();
+        BufferedReader data = urlReader.data;
         String line, strConverter = "one", strExchangeRate;
         boolean is = false;
-        double conventer = 0, exchangeRate = 0;
+        double converter = 0, exchangeRate = 0;
         while ((line = data.readLine()) != null){
             if(is){
                 strExchangeRate = line.replaceAll(",", ".");
@@ -27,17 +40,15 @@ public class Cantor {
                 is = false;
             }
             if( line.contains(currencyName)){
-                conventer = Double.parseDouble(strConverter.replaceAll("[^0-9.]",""));
+                converter = Double.parseDouble(strConverter.replaceAll("[^0-9.]",""));
                 is = true;
             }
             strConverter = line;
 
         }
         data.close();
-        double []currency = {0, 0};
-        currency[0] = exchangeRate;
-        currency[1] = conventer;
-        return currency;
+        this.exchangeRate = exchangeRate;
+        this.converter = converter;
     }
 
 }

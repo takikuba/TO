@@ -53,7 +53,7 @@ public class MakeChoice {
         System.out.print("Wybierz walute na jaka chcesz zamienic: " + wypisWalut);
         String line2 = reader.readLine();
 
-        String kurs = String.valueOf(new URLReader());
+//        String kurs = String.valueOf(new URLReader());
 
     }
 }
