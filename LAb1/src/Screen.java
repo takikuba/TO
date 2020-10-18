@@ -1,6 +1,18 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
@@ -22,7 +34,6 @@ public class Screen  {
         Choice choice1;
         choice1 = new CashList().getCashList();
         choice1.setBounds(40, 45, 75, 75);
-        System.out.println("Break1");
 
         Button button1 = new Button("Set");
         button1.setBounds(120, 45, 50, 20);
@@ -34,7 +45,7 @@ public class Screen  {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-            System.out.println("B4");
+
         });
 
         jFrame.getContentPane().add(button1);
@@ -104,13 +115,25 @@ public class Screen  {
 
 class URLReader {
     static BufferedReader data;
+    static NodeList nodeList;
+
     URLReader() throws Exception {
-        URLReader.data = URLReader.getData();
+//        URLReader.data = getData();
+        URLReader.nodeList = getXMLData();
     }
 
-    public static BufferedReader getData() throws Exception{
+    public static BufferedReader getData() throws Exception {
         URL webPage = new URL("https://www.nbp.pl/kursy/xml/lasta.xml");
-        return new BufferedReader( new InputStreamReader(webPage.openStream()));
+        return new BufferedReader(new InputStreamReader(webPage.openStream()));
+    }
+
+    public NodeList getXMLData() throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new URL("https://www.nbp.pl/kursy/xml/lasta.xml").openStream());
+        doc.getDocumentElement().normalize();
+
+        return doc.getElementsByTagName("pozycja");
     }
 }
 
@@ -118,11 +141,12 @@ class CashList extends Choice {
 
     static Choice choice;
 
-    CashList(){
+    CashList() throws Exception {
         choice = getCashList();
+
     }
 
-    Choice getCashList() {
+    Choice getCashList() throws Exception {
         choice = new Choice();
         String[] cash = {"THB", "USD", "AUD", "HKD", "CAD", "NZD", "SGD", "EUR", "HUF", "CHF", "GBP", "UAH",
                          "JPY", "CZK", "DKK", "ISK", "NOK", "SEK", "HRK", "RON", "BGN", "TRY", "ILS", "CLP",
@@ -131,7 +155,18 @@ class CashList extends Choice {
         for(String s: cash){
             choice.add(s);
         }
-        System.out.println("BreakChoice");
+        new URLReader();
+        URLReader urlReader = new URLReader();
+        NodeList nodeList = urlReader.getXMLData();
+        for(int i=0; i < nodeList.getLength(); i++){
+            Node node = nodeList.item(i);
+            if( node.getNodeType() == Node.ELEMENT_NODE){
+                Element element = (Element) node;
+                System.out.println(element.getElementsByTagName("kod_waluty").item(0).getTextContent());
+                choice.add(element.getElementsByTagName("kod_waluty").item(0).getTextContent());
+            }
+        }
+
         return choice;
     }
 
