@@ -1,14 +1,5 @@
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.io.IOException;
-import java.net.URL;
 
 public class Screen  {
 
@@ -104,40 +95,4 @@ public class Screen  {
         jFrame.setSize(400, 300);
         jFrame.setVisible(true);
     }
-}
-
-class URLReader {
-    static NodeList nodeList;
-
-    URLReader() throws Exception {
-        URLReader.nodeList = getXMLData();
-    }
-
-    public NodeList getXMLData() throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(new URL("https://www.nbp.pl/kursy/xml/lasta.xml").openStream());
-        doc.getDocumentElement().normalize();
-
-        return doc.getElementsByTagName("pozycja");
-    }
-}
-
-class CashList extends Choice {
-
-    static Choice choice;
-
-    CashList() throws Exception {
-        choice = getCashList();
-    }
-
-    Choice getCashList() throws Exception {
-        choice = new Choice();
-        CurrencyList currencyList = new CurrencyList();
-        for(Currency myCurrency: currencyList.currencyList){
-            choice.add(myCurrency.name);
-        }
-        return choice;
-    }
-
 }
