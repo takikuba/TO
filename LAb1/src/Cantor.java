@@ -1,4 +1,8 @@
-import java.io.BufferedReader;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cantor {
 
@@ -7,48 +11,43 @@ public class Cantor {
     public Cantor(Currency currencySell, Currency currencyBuy, double quantity){
         giveTheChange = (currencySell.exchangeRate / currencySell.converter) / (currencyBuy.exchangeRate / currencyBuy.converter) * quantity;
     }
-
 }
 
 class Currency{
     String name;
     double exchangeRate;
-    double converter;
+    int converter;
 
-    Currency(String name) throws Exception {
+    Currency(String name) {
         this.name = name;
-        this.setLine(this.name);
-    }
-    double getRate() {
-        return this.exchangeRate;
     }
 
-    double getConverter() {
-        return this.converter;
-    }
-
-    void setLine(String currencyName) throws Exception{
-        URLReader urlReader = new URLReader();
-        BufferedReader data = urlReader.data;
-        String line, strConverter = "one", strExchangeRate;
-        boolean is = false;
-        double converter = 0, exchangeRate = 0;
-        while ((line = data.readLine()) != null){
-            if(is){
-                strExchangeRate = line.replaceAll(",", ".");
-                exchangeRate = Double.parseDouble(strExchangeRate.replaceAll("[^0-9.]", ""));
-                is = false;
+    void setCurrencyElements() throws Exception {
+        CurrencyList currencyList = new CurrencyList();
+        for(Currency myCurrency: currencyList.currencyList){
+            if(this.name.equals(myCurrency.name)){
+                this.converter = myCurrency.converter;
+                this.exchangeRate = myCurrency.exchangeRate;
             }
-            if( line.contains(currencyName)){
-                converter = Double.parseDouble(strConverter.replaceAll("[^0-9.]",""));
-                is = true;
-            }
-            strConverter = line;
-
         }
-        data.close();
-        this.exchangeRate = exchangeRate;
-        this.converter = converter;
     }
+}
 
+class CurrencyList{
+
+    List<Currency> currencyList = new ArrayList<>();
+
+    CurrencyList() throws Exception {
+        NodeList nodeList = new URLReader().getXMLData();
+        for( int i = 0; i < nodeList.getLength(); i++ ){
+            Node node = nodeList.item(i);
+            if ( node.getNodeType() == Node.ELEMENT_NODE){
+                Element element = (Element) node;
+                Currency currency = new Currency(element.getElementsByTagName("kod_waluty").item(0).getTextContent());
+                currency.converter = Integer.parseInt(element.getElementsByTagName("przelicznik").item(0).getTextContent());
+                currency.exchangeRate = Double.parseDouble(element.getElementsByTagName("kurs_sredni").item(0).getTextContent().replaceAll(",","."));
+                currencyList.add(currency);
+            }
+        }
+    }
 }

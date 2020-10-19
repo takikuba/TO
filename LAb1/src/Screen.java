@@ -1,19 +1,13 @@
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 public class Screen  {
@@ -25,23 +19,21 @@ public class Screen  {
     public static void main(String []args) throws Exception{
 
         JFrame jFrame = new JFrame("Wymiana walut");
-
         Label label1 = new Label("Wybierz walute do wymiany: ");
         label1.setBounds(15, 20, 150, 30);
         Label label12 = new Label();
         label12.setBounds(250, 45, 150, 20);
-
         Choice choice1;
         choice1 = new CashList().getCashList();
         choice1.setBounds(40, 45, 75, 75);
-
         Button button1 = new Button("Set");
         button1.setBounds(120, 45, 50, 20);
         button1.addActionListener((e)->{
             try {
                 currencySell = new Currency(choice1.getItem(choice1.getSelectedIndex()));
                 label1.setText("Waluta do wymiany: " + currencySell.name);
-                label12.setText("Aktualny kurs: " + currencySell.getRate());
+                currencySell.setCurrencyElements();
+                label12.setText("Aktualny kurs: " + currencySell.exchangeRate);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -68,7 +60,8 @@ public class Screen  {
             try {
                 currencyBuy = new Currency(choice2.getItem(choice2.getSelectedIndex()));
                 label2.setText("Wymieniam na: " + currencyBuy.name);
-                label22.setText("Aktualny kurs: " + currencyBuy.getRate());
+                currencyBuy.setCurrencyElements();
+                label22.setText("Aktualny kurs: " + currencyBuy.exchangeRate);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -114,17 +107,10 @@ public class Screen  {
 }
 
 class URLReader {
-    static BufferedReader data;
     static NodeList nodeList;
 
     URLReader() throws Exception {
-//        URLReader.data = getData();
         URLReader.nodeList = getXMLData();
-    }
-
-    public static BufferedReader getData() throws Exception {
-        URL webPage = new URL("https://www.nbp.pl/kursy/xml/lasta.xml");
-        return new BufferedReader(new InputStreamReader(webPage.openStream()));
     }
 
     public NodeList getXMLData() throws ParserConfigurationException, IOException, SAXException {
@@ -143,30 +129,14 @@ class CashList extends Choice {
 
     CashList() throws Exception {
         choice = getCashList();
-
     }
 
     Choice getCashList() throws Exception {
         choice = new Choice();
-        String[] cash = {"THB", "USD", "AUD", "HKD", "CAD", "NZD", "SGD", "EUR", "HUF", "CHF", "GBP", "UAH",
-                         "JPY", "CZK", "DKK", "ISK", "NOK", "SEK", "HRK", "RON", "BGN", "TRY", "ILS", "CLP",
-                         "PHP", "MXN", "ZAR", "BRL", "MYR", "RUB", "IDR", "INR", "KRW", "CNY", "XRD"};
-
-        for(String s: cash){
-            choice.add(s);
+        CurrencyList currencyList = new CurrencyList();
+        for(Currency myCurrency: currencyList.currencyList){
+            choice.add(myCurrency.name);
         }
-        new URLReader();
-        URLReader urlReader = new URLReader();
-        NodeList nodeList = urlReader.getXMLData();
-        for(int i=0; i < nodeList.getLength(); i++){
-            Node node = nodeList.item(i);
-            if( node.getNodeType() == Node.ELEMENT_NODE){
-                Element element = (Element) node;
-                System.out.println(element.getElementsByTagName("kod_waluty").item(0).getTextContent());
-                choice.add(element.getElementsByTagName("kod_waluty").item(0).getTextContent());
-            }
-        }
-
         return choice;
     }
 
