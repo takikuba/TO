@@ -1,37 +1,27 @@
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Scanner;
-
 public class Terminal {
 
-    String manual = "Hello!\n" +
-            "Option:\n" +
-            "--man: go to manual\n" +
-            "--ls: list directory contents\n" +
-            "--shutdown: shutdown terminal\n";
-
     public static void main(String[] args) {
-        Folder folder = new Folder("root", "/.");
-        System.out.println(folder.toString());
-        File file = new File("file1");
-        file.setContent("file1");
-        System.out.println(file.catContent());
-    }
 
-    public Terminal(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Hello type --man");
-        String line = scanner.nextLine();
-        while(!line.equals("shutdown")){
-            switch (line) {
-                case "man":
-                    System.out.println(manual);
-                case "":
+        Folder one = new Folder("1");
+        Folder root = new Folder("1.1");
+        Folder root2 = new Folder("1.2");
+        one.add(root);
+        one.add(root2);
 
-            }
+        File file11 = new File("file11");
+        file11.setContent("Text file11");
+        file11.catContent();
 
-            line = scanner.nextLine();
-        }
+        File file12 = new File("file11");
+        file12.setContent("Text file12");
+        file12.catContent();
+
+        root.add(file11);
+        root2.add(file12);
+
+        one.tree();
+
+
     }
 
 

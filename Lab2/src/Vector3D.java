@@ -1,4 +1,4 @@
-import java.util.Arrays;
+
 
 public class Vector3D extends Vector2D {
 
@@ -37,7 +37,7 @@ public class Vector3D extends Vector2D {
             Vector3D vector3D = (Vector3D) vector;
             return getX() * vector3D.getX() + getY() * vector3D.getY() + z * vector3D.z;
         }
-        throw new IllegalArgumentException("Podany arg musi byc Vector2D!");
+        throw new IllegalArgumentException("Argument must be of type Vector2D!");
     }
 
     public Vector3D crossProduct(Vector3D vector3D){
