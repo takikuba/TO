@@ -1,44 +1,42 @@
-public class Main extends Society{
+public class Main{
 
     public static void main(String[] args) {
-        Main main = new Main();
-    }
 
-    public Main(){
+        Society society = new Society();
+        society.addPerson("Jan", "Kowalski", 11111111111L);
+        society.addPerson("Jan", "Kowalski", 22222222222L);
+        society.addPerson("Jan", "Nowak", 33333333333L);
+        society.addPerson("Pan", "Nowak", 4444444444L);
+        society.addPerson("Pan", "Nowak", 55555555555L);
+        society.addPerson("Pan", "Carter", 66666666666L);
+        society.addPerson("Pan", "Carter", 77777777777L);
 
-        addPerson("Jan", "Nowak", 1L);
-        addPerson("Andrzej", "Duda", 2L);
-        addPerson("Andrzej", "Komorowski", 43L);
-        addPerson("Kuba", "Sasin", 3L);
-        addPerson("Kuba", "Po", 6L);
-        addPerson("Jan", "Po", 4L);
-        addPerson("Jan", "Po", 5L);
-        addPerson("Jan", "Po", 7L);
+        System.out.println("--------TreeBeforeUseRM--------");
+        society.showPersons();
 
-        SocietyIterator iterator = iterator();
-        while (iterator.hasNext()){
-            System.out.println(iterator.next());
+        society.rmPerson("Pan", "Nowak", 55555555555L);
+
+        System.out.println("--------TreeAfterUseRM---------");
+        society.showPersons();
+
+
+        System.out.println("------------Iterator------------");
+        Society.SocietyIterator iteratorSociety = society.iterator();
+        while(iteratorSociety.hasNext()){
+            PersonName p = iteratorSociety.next();
+            System.out.println(p);
+            PersonName.PersonNameIterator iteratorPerson = p.iterator();
+            while(iteratorPerson.hasNext()){
+                PersonLastName p2 = iteratorPerson.next();
+                System.out.print("  \\_ ");
+                System.out.println(p2);
+                PersonLastName.PersonLastNameIterator iterator = p2.iterator();
+                while(iterator.hasNext()){
+                    System.out.print("     \\_ ");
+                    System.out.println(iterator.next());
+                }
+            }
         }
 
-
-        showPersons();
-        System.out.println("Count of Name Factory: " + nameFactory.getSize());
-        System.out.println("Count of Last Name Factory: " + lastNameFactory.getSize());
-        System.out.println("Count of Humans in Society: " + getSize());
-
-        System.out.println("------------------------------------------------------");
-
-        rmPerson("Jan", "Po", 7);
-        showPersons();
-        System.out.println(getSize());
-
-        iterator = iterator();
-        while (iterator.hasNext()){
-            System.out.println(iterator.next());
-        }
-
-
-
     }
-
 }

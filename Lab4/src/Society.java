@@ -2,10 +2,9 @@ import java.util.*;
 
 public class Society {
 
-    Map<String, PersonName> persons = new HashMap<>();
-    static Map<Long, Person> people = new HashMap<>();
-    static List<Long> id = new ArrayList<>();
-    static NameFactory nameFactory = new NameFactory();
+    static Map<String, PersonName> persons = new HashMap<>();
+    List<Long> id = new ArrayList<>();
+    NameFactory nameFactory = new NameFactory();
     static NameFactory lastNameFactory = new NameFactory();
 
     public void addPerson(String name, String lastName, long id){
@@ -26,7 +25,6 @@ public class Society {
 
     }
     public void rmPerson(String name, String lastName, long id){
-
         if(persons.containsKey(name)){
             if (persons.get(name).hasChild()) {
                 persons.get(name).rmPerson(lastName, id);
@@ -34,6 +32,7 @@ public class Society {
             } else {
                 persons.remove(name);
             }
+            this.id.remove(id);
         } else {
             System.out.println("Nie ma takiej osoby!");
         }
@@ -41,7 +40,7 @@ public class Society {
     }
 
     public int getSize(){
-        return people.size();
+        return persons.size();
     }
 
     public void showPersons(){
@@ -59,9 +58,9 @@ public class Society {
         private int index = 0;
 
         @Override
-        public Person next() {
+        public PersonName next() {
             if(this.hasNext()){
-                return people.get(id.get(index++));
+                return persons.get(persons.keySet().toArray()[index++]);
             } else {
                 return null;
             }
@@ -69,16 +68,9 @@ public class Society {
 
         @Override
         public boolean hasNext() {
-            if ( index < people.size() ) {
-                return true;
-            } else {
-                return false;
-            }
+            return index < persons.size();
         }
 
-        public String toString(){
-            return people.keySet().toArray()[index].toString();
-        }
     }
 
 }

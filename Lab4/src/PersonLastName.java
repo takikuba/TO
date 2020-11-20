@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PersonLastName {
@@ -14,8 +15,6 @@ public class PersonLastName {
     }
 
     public void addId(long id){
-        Society.people.put(id, new Person(typeName, type, id));
-
         this.id.add(id);
     }
 
@@ -26,9 +25,11 @@ public class PersonLastName {
     public void rmPerson(long id){
         if(this.id.contains(id)){
             this.id.remove(id);
-            Society.people.remove(id);
-            Society.id.remove(id);
         }
+    }
+
+    public PersonLastNameIterator iterator(){
+        return new PersonLastNameIterator();
     }
 
 
@@ -45,4 +46,23 @@ public class PersonLastName {
         }
     }
 
+    class PersonLastNameIterator implements Iterator<Long>{
+        private int index = 0;
+
+
+        @Override
+        public Long next() {
+            if( this.hasNext() ){
+                return id.get(index++);
+            }
+            return null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < id.size();
+        }
+    }
+
 }
+

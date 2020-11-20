@@ -41,7 +41,6 @@ public class PersonName {
         return personsLast.size() > 0;
     }
 
-
     public int getSize(){
         return personsLast.size();
     }
@@ -53,35 +52,26 @@ public class PersonName {
         }
     }
 
-//    public PersonIterator iterator(){
-//        return new PersonIterator();
-//    }
-//
-//    public class PersonIterator implements Iterator {
-//        private int index = 0;
-//        private PersonLast.PersonLastIterator personLastIterator;
-//
-//        public PersonLast.PersonLastIterator getDeptIterator(){
-//            return personsLast.get(personsLast.keySet().toArray()[index]).iterator();
-//        }
-//
-//        @Override
-//        public <E> E next() {
-//            if (this.hasNext()) {
-//                return (E) personsLast.get((String) personsLast.keySet().toArray()[index++]);
-//            } else {
-//                return null;
-//            }
-//        }
-//
-//        @Override
-//        public boolean hasNext() {
-//            if ( index < personsLast.size() ) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-//    }
+    public PersonNameIterator iterator(){
+        return new PersonNameIterator();
+    }
+
+    public class PersonNameIterator implements Iterator {
+        private int index = 0;
+
+        @Override
+        public PersonLastName next() {
+            if(this.hasNext()) {
+                return personsLast.get(personsLast.keySet().toArray()[index++]);
+            }
+            return null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < personsLast.size();
+        }
+
+    }
 
 }
