@@ -19,6 +19,11 @@ public class Main{
         System.out.println("--------TreeAfterUseRM---------");
         society.showPersons();
 
+        System.out.println("---FindFunctionDemonstration---");
+        System.out.println(society.findPerson("Jan", "Kowalski", 11111111111L));
+        society.rmPerson("Jan", "Kowalski", 11111111111L);
+        System.out.println(society.findPerson("Jan", "Kowalski", 11111111111L));
+
 
         System.out.println("------------Iterator------------");
         Society.SocietyIterator iteratorSociety = society.iterator();

@@ -4,17 +4,15 @@ import java.util.List;
 
 public class PersonLastName {
 
-    private PersonNameType typeName;
-    private PersonNameType type;
-    private List<Long> id = new ArrayList<>();
+    private final PersonNameType type;
+    private final List<Long> id = new ArrayList<>();
 
-    public PersonLastName(PersonNameType personNameType, PersonNameType type, long id){
-        this.typeName = personNameType;
+    public PersonLastName(PersonNameType type, long id){
         this.type = type;
-        addId(id);
+        addPerson(id);
     }
 
-    public void addId(long id){
+    public void addPerson(long id){
         this.id.add(id);
     }
 
@@ -23,9 +21,7 @@ public class PersonLastName {
     }
 
     public void rmPerson(long id){
-        if(this.id.contains(id)){
-            this.id.remove(id);
-        }
+        this.id.remove(id);
     }
 
     public PersonLastNameIterator iterator(){
@@ -44,6 +40,10 @@ public class PersonLastName {
             System.out.print("      -");
             System.out.println(i);
         }
+    }
+
+    public boolean findPerson(long id) {
+        return this.id.contains(id);
     }
 
     class PersonLastNameIterator implements Iterator<Long>{

@@ -3,24 +3,20 @@ import java.util.Map;
 
 public class PersonName {
 
-    private String name;
-    private PersonNameType type;
+    PersonNameType type;
     Map<String, PersonLastName> personsLast = new HashMap<>();
 
     public PersonName(PersonNameType type, String lastName, long id){
-        this.name = lastName;
         this.type = type;
         addPerson(lastName, id);
-
     }
 
     public void addPerson(String lastName, long id){
-
-        PersonNameType typeLastName = Society.lastNameFactory.getPerson(lastName);
+        PersonNameType typeLast = Society.lastNameFactory.getPerson(lastName);
         if(personsLast.containsKey(lastName)){
-            personsLast.get(lastName).addId(id);
+            personsLast.get(lastName).addPerson(id);
         } else {
-            PersonLastName personLastName = new PersonLastName(type, typeLastName, id);
+            PersonLastName personLastName = new PersonLastName(typeLast, id);
             personsLast.put(lastName, personLastName);
         }
 
@@ -52,11 +48,19 @@ public class PersonName {
         }
     }
 
+    public boolean findPerson(String lastName, long id) {
+        if(personsLast.containsKey(lastName)){
+            return personsLast.get(lastName).findPerson(id);
+        }
+        return false;
+    }
+
     public PersonNameIterator iterator(){
         return new PersonNameIterator();
     }
 
-    public class PersonNameIterator implements Iterator {
+
+    public class PersonNameIterator implements Iterator<PersonLastName> {
         private int index = 0;
 
         @Override

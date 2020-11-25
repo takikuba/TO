@@ -24,6 +24,7 @@ public class Society {
         }
 
     }
+
     public void rmPerson(String name, String lastName, long id){
         if(persons.containsKey(name)){
             if (persons.get(name).hasChild()) {
@@ -37,6 +38,13 @@ public class Society {
             System.out.println("Nie ma takiej osoby!");
         }
 
+    }
+
+    public boolean findPerson(String name, String lastName, long id){
+        if(persons.containsKey(name)){
+            return persons.get(name).findPerson(lastName, id);
+        }
+        return false;
     }
 
     public int getSize(){
@@ -54,7 +62,7 @@ public class Society {
         return new SocietyIterator();
     }
 
-    static class SocietyIterator implements Iterator {
+    static class SocietyIterator implements Iterator<PersonName> {
         private int index = 0;
 
         @Override
